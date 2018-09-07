@@ -12,7 +12,7 @@
  */
 
 namespace Bundles\FrameworkBundle\Routing;
-use Support\Arr;
+use Bundles\FrameworkBundle\Support\Arr;
 
 class RouteGroup
 {

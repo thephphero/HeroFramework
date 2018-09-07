@@ -58,7 +58,7 @@ class Database {
 
         try {
 
-            $this->pdo = new PDO($dsn, $username, $password, $options);
+          //  $this->pdo = new PDO($dsn, $username, $password, $options);
 
         } catch (PDOException $e) {
 

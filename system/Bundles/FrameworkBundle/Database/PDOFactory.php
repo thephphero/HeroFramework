@@ -2,7 +2,7 @@
 
 namespace Bundles\FrameworkBundle\Database;
 
-use Library\Config\Config;
+use Bundles\FrameworkBundle\Config\Config;
 
 class PDOFactory{
 

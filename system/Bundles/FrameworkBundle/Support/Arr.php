@@ -39,7 +39,8 @@ class Arr{
     public static function get($array, $key, $default = null)
     {
         if (! static::accessible($array)) {
-            return value($default);
+            return $default;
+            //return value($default);
         }
         if (is_null($key)) {
             return $array;
@@ -51,7 +52,8 @@ class Arr{
             if (static::accessible($array) && static::exists($array, $segment)) {
                 $array = $array[$segment];
             } else {
-                return value($default);
+                return $default;
+                //return value($default);
             }
         }
         return $array;

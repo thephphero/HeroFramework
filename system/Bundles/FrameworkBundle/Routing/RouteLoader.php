@@ -12,9 +12,7 @@
  */
 namespace Bundles\FrameworkBundle\Routing;
 
-use Core\Container;
-use Library\Config\Config;
-
+use Bundles\FrameworkBundle\Config\Config;
 use Bundles\FrameworkBundle\Request\Request;
 use Bundles\FrameworkBundle\Routing\RouteNameCreator;
 use Symfony\Component\Config\Loader\Loader;

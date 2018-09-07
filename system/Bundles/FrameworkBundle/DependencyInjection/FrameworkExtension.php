@@ -10,8 +10,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-
 namespace Bundles\FrameworkBundle\DependencyInjection;
 
 use Bundles\FrameworkBundle\Config\ConfigServiceProvider;
@@ -23,9 +21,6 @@ use Bundles\FrameworkBundle\Request\RequestServiceProvider;
 use Bundles\FrameworkBundle\Routing\RoutingServiceProvider;
 use Bundles\FrameworkBundle\Session\SessionServiceProvider;
 use Bundles\FrameworkBundle\HttpKernel\HttpKernelServiceProvider;
-use Library\Pagination\PaginationServiceProvider;
-use Library\Response\ResponseServiceProvider;
-use Library\Routing\Routers\Router;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -46,9 +41,6 @@ class FrameworkExtension extends Extension{
         DatabaseServiceProvider::class,
         //DoctrineServiceProvider::class,
         SessionServiceProvider::class,
-        \Library\Csrf\CsrfServiceProvider::class,
-        \Library\Template\TemplateServiceProvider::class,
-        \Library\Response\ResponseServiceProvider::class
     ];
 
     public function load(array $configs, ContainerBuilder $container)
@@ -121,8 +113,6 @@ class FrameworkExtension extends Extension{
         }
 
     }
-
-
 
     private function registerDefaultControllerConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader){
         if(isset($config['default_routes'])){

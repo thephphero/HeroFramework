@@ -15,8 +15,6 @@ namespace Bundles\FrameworkBundle\Routing;
 
 use Core\Container;
 
-use Library\Routing\Listeners\DynamicRouterListener;
-use Library\Routing\Listeners\HttpNotFoundListener;
 use Bundles\FrameworkBundle\Routing\Listeners\MiddlewareListener;
 use Bundles\FrameworkBundle\Interfaces\EventListenerProviderInterface;
 use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
@@ -56,7 +54,10 @@ class RoutingServiceProvider implements ServiceProviderInterface{
         $container->setDefinition('url_generator',$generatorDefinition);
 
         //Route Loader
-        $routeLoaderDefinition = new Definition(RouteLoader::class);
+        $routeLoaderDefinition = new Definition(RouteLoader::class,[
+            new Reference('request'),
+            new Reference('config')
+        ]);
         $container->setDefinition('routing.route_loader',$routeLoaderDefinition);
 
         //Router

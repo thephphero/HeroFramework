@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Definition;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\HttpKernel;
-use Library\Controller\ContainerAwareControllerResolver;
+use Bundles\FrameworkBundle\Controller\ContainerAwareControllerResolver;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\EventListener\ResponseListener;
 use Symfony\Component\HttpFoundation\RequestStack;
