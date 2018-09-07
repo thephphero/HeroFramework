@@ -29,6 +29,8 @@ class FrameworkBundle extends Bundle{
     {
         parent::build($container);
 
+        $extension = $container->getExtension('framework');
+
         $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new ContainerBuilderDebugDumpPass());
         $container->addCompilerPass(new RouteCollectionPass());

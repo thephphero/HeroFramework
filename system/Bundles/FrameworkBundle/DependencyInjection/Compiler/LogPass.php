@@ -21,7 +21,7 @@ class LogPass implements CompilerPassInterface{
     {
         $definition =  $container->findDefinition('log');
 
-        $filename=$container->getParameter('kernel.logs_dir').DIRECTORY_SEPARATOR.'log_project_'.$container->get('request')->getHost().'.log';
+        $filename=$container->getParameter('kernel.logs_dir').DIRECTORY_SEPARATOR.'log_project_'.$container->get('request')->getHttpHost().'.log';
         $definition->replaceArgument(0,$filename);
     }
 }

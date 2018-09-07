@@ -15,7 +15,7 @@ namespace Core;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Debug\Debug;
-use Bundles\FrameworkBundle\DependencyInjection\Library\Request\Request;
+use Bundles\FrameworkBundle\Request\Request;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
@@ -65,7 +65,7 @@ class Application extends Kernel {
     {
         foreach ($this->bundles as $bundle){
             if(file_exists($bundle->getPath().DIRECTORY_SEPARATOR.'config.yml')){
-               // $loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'config.yml');
+                $loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'config.yml');
             }
         }
 
