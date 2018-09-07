@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+/**
+ * The Hero Framework.
+ *
+ * (c) Celso Luiz de F. Fernandes  <celso@thephphero.com>
+ * Date: 18/08/17
+ * Time: 20:43
+ * Created by thePHPHero
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+
+
+require __DIR__ . '/bootstrap/autoload.php';
+
+use Console\Application;
+
+$app = new \Core\Application(__DIR__,getenv('ENVIRONMENT'),getenv('DEBUG'));
+
+$application = new Application($app,'NoshPos','3.0');
+
+//$command = new \Console\Commands\LicenseCommand();
+
+//$application->add($command);
+
+$output = new \Symfony\Component\Console\Output\ConsoleOutput();
+
+$output->writeln(' Welcome to HERO');
+
+$application->run();
