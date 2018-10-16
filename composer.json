@@ -13,7 +13,9 @@
     "symfony/finder": "^3.4",
     "symfony/console": "^3.4",
     "symfony/validator": "^3.4",
-    "symfony/filesystem": "~3.4"
+    "symfony/filesystem": "~3.4",
+    "doctrine/orm": "^2.5",
+    "monolog/monolog": "^1.23"
   },
   "autoload": {
     "psr-4": { "": "system/","App\\":"app/" }
