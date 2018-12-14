@@ -12,74 +12,28 @@
  */
 namespace Bundles\FrameworkBundle\DependencyInjection;
 
-use Bundles\FrameworkBundle\Config\ConfigServiceProvider;
-use Bundles\FrameworkBundle\Database\DatabaseServiceProvider;
-use Bundles\FrameworkBundle\Doctrine\DoctrineServiceProvider;
-use Bundles\FrameworkBundle\Exception\ExceptionServiceProvider;
-use Bundles\FrameworkBundle\Log\LogServiceProvider;
-use Bundles\FrameworkBundle\Request\RequestServiceProvider;
-use Bundles\FrameworkBundle\Response\ResponseServiceProvider;
-use Bundles\FrameworkBundle\Routing\RoutingServiceProvider;
-use Bundles\FrameworkBundle\Session\SessionServiceProvider;
-use Bundles\FrameworkBundle\HttpKernel\HttpKernelServiceProvider;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
-use Bundles\FrameworkBundle\Interfaces\EventListenerProviderInterface;
+
 
 class FrameworkExtension extends Extension{
-
-    protected $services=[
-        RequestServiceProvider::class,
-        RoutingServiceProvider::class,
-        HttpKernelServiceProvider::class,
-        ConfigServiceProvider::class,
-        LogServiceProvider::class,
-        ExceptionServiceProvider::class,
-        DatabaseServiceProvider::class,
-        //DoctrineServiceProvider::class,
-        SessionServiceProvider::class,
-        ResponseServiceProvider::class
-    ];
 
     public function load(array $configs, ContainerBuilder $container)
     {
 
-        $loader = new XmlFileLoader($container, new FileLocator(dirname(__DIR__).'/Resources/config'));
+        //Service Provider
+        $serviceProvider = new FrameworkBundleServiceProvider();
+        $serviceProvider->register($container);
 
-        foreach ($this->services as $service){
-
-            if(class_exists($service)){
-
-                $class=new $service();
-
-                if ($class instanceof ServiceProviderInterface) {
-
-                    $class->register($container);
-                }
-
-                if ($class instanceof EventListenerProviderInterface) {
-
-                    $class->subscribe($container, $container->get('event_dispatcher'));
-                }
-            }
-        }
-
-        $this->registerContainerVariables($configs[0],$container,$loader);
-        $this->registerSessionConfiguration($configs[0],$container,$loader);
-        $this->registerDefaultControllerConfiguration($configs[0],$container,$loader);
-
-        $this->addClassesToCompile([
-            'Symfony\\Component\\HttpKernel\\Controller\\ControllerResolver',
-            '\\Library\\Loader\\Loader',
-        ]);
+        $this->registerContainerVariables($configs[0],$container);
+        $this->registerSessionConfiguration($configs[0],$container);
+        $this->registerDefaultControllerConfiguration($configs[0],$container);
 
     }
 
-    private function registerContainerVariables(array $config, ContainerBuilder $container, XmlFileLoader $loader){
+    private function registerContainerVariables(array $config, ContainerBuilder $container){
+
         //Set environment variables
         $container->setParameter('kernel.timezone',$config['kernel.timezone']);
         $container->setParameter('request_listener.http_port', 80);
@@ -95,7 +49,7 @@ class FrameworkExtension extends Extension{
         $container->setParameter('DB_PREFIX',getenv('DB_PREFIX'));
     }
 
-    private function registerSessionConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader){
+    private function registerSessionConfiguration(array $config, ContainerBuilder $container){
 
         $sessionDefinition=$container->getDefinition('session.session_storage');
 
@@ -116,7 +70,7 @@ class FrameworkExtension extends Extension{
 
     }
 
-    private function registerDefaultControllerConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader){
+    private function registerDefaultControllerConfiguration(array $config, ContainerBuilder $container){
         if(isset($config['default_routes'])){
             foreach($config['default_routes'] as $key=>$route){
                 $container->setParameter($key,$route);
