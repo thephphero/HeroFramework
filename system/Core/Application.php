@@ -64,8 +64,8 @@ class Application extends Kernel {
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         foreach ($this->bundles as $bundle){
-            if(file_exists($bundle->getPath().DIRECTORY_SEPARATOR.'config.yml')){
-                $loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'config.yml');
+            if(file_exists($bundle->getPath().DIRECTORY_SEPARATOR.'DependencyInjection/Resources/config/config.yml')){
+                $loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'DependencyInjection/Resources/config/config.yml');
             }
         }
 

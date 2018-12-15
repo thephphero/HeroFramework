@@ -1,6 +1,6 @@
 <?php
 
-namespace Library\Exception;
+namespace Bundles\FrameworkBundle\Exception;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Debug\Exception\FatalErrorException;
