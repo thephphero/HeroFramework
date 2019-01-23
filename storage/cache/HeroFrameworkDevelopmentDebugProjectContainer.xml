@@ -25,6 +25,9 @@
     <parameter key="request_listener.https_port">445</parameter>
     <parameter key="session_dir">storage/sessions</parameter>
     <parameter key="root_dir">/Users/celsoluiz81/Sites/HeroFramework</parameter>
+    <parameter key="default_locale">en-us</parameter>
+    <parameter key="template_cache_dir">storage/cache/twig</parameter>
+    <parameter key="template_dir">resources/views</parameter>
     <parameter key="base_url">thephphero.local</parameter>
     <parameter key="DB_HOST">localhost</parameter>
     <parameter key="DB_USER">root</parameter>
@@ -129,6 +132,26 @@
     </service>
     <service id="session.save_session_listener" class="Symfony\Component\HttpKernel\EventListener\SaveSessionListener">
       <tag name="kernel.event_subscriber"/>
+    </service>
+    <service id="locale.local_listener" class="Bundles\FrameworkBundle\Locale\LocaleListener">
+      <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest"/>
+    </service>
+    <service id="twig.loader" class="Twig_Loader_Filesystem">
+      <argument>app</argument>
+      <argument>%kernel.root_dir%</argument>
+    </service>
+    <service id="twig.environment" class="Twig\Environment">
+      <argument type="service" id="twig.loader"/>
+      <argument type="collection">
+        <argument key="cache">%template_cache_dir%</argument>
+        <argument key="auto_reload">%kernel.debug%</argument>
+      </argument>
+    </service>
+    <service id="template" class="Bundles\FrameworkBundle\Template\Template">
+      <argument type="service" id="twig.environment"/>
+      <call method="addTemplateDir">
+        <argument>%template_dir%</argument>
+      </call>
     </service>
     <service id="Psr\Container\ContainerInterface" alias="service_container" public="false"/>
     <service id="Symfony\Component\DependencyInjection\ContainerInterface" alias="service_container" public="false"/>

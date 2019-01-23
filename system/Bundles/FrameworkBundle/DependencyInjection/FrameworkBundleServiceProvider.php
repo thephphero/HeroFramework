@@ -1,13 +1,22 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: uid20214
+ * The Hero Framework.
+ *
+ * (c) Celso Luiz de F. Fernandes  <celso@thephphero.com>
  * Date: 13.12.2018
- * Time: 10:15
+ * Time: 14:43
+ * Created by thePHPHero
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Bundles\FrameworkBundle\DependencyInjection;
 
+use Bundles\FrameworkBundle\Locale\Language;
+use Bundles\FrameworkBundle\Locale\LocaleListener;
+use Bundles\FrameworkBundle\Template\Template;
+use Bundles\FrameworkBundle\Template\TemplateFactory;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
@@ -41,6 +50,7 @@ use Symfony\Component\HttpKernel\EventListener\SaveSessionListener;
 use Bundles\FrameworkBundle\Session\SessionListener;
 use Bundles\FrameworkBundle\Database\Database;
 use Bundles\FrameworkBundle\Database\PDOFactory;
+use Twig\Environment;
 
 class FrameworkBundleServiceProvider implements ServiceProviderInterface{
 
@@ -177,7 +187,7 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         $viewResponseListenerDefinition->addTag('kernel.event_listener',['event'=>'kernel.view','method'=>'onKernelView']);
         $container->setDefinition('listener.view_response',$viewResponseListenerDefinition);
 
-        //Database
+        //Database (PDO)
         $definition = new Definition(Database::class,[
             new Reference('config')
         ]);
@@ -221,6 +231,41 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         $saveSessionListenerDefinition->addTag('kernel.event_subscriber');
         $container->setDefinition('session.save_session_listener',$saveSessionListenerDefinition);
 
+        //Locale Listener
+        $localListenerDefinition=new Definition(LocaleListener::class);
+        $localListenerDefinition->addTag('kernel.event_listener',['event'=>'kernel.request','method'=>'onKernelRequest']);
+        $container->setDefinition('locale.local_listener',$localListenerDefinition);
+
+        //Translator
+        $translatorDefinition=new Definition(Language::class,[
+            new Reference('request'),
+            '%default_locale%'
+        ]);
+        $translatorDefinition->addMethodCall('load',['%root_dir%']);
+        $container->set('locale.translator',$translatorDefinition);
+
+        //Twig Loader
+        $twigLoaderDefinition = new Definition(\Twig_Loader_Filesystem::class,[
+            'app',
+            '%kernel.root_dir%'
+        ]);
+        $container->setDefinition('twig.loader',$twigLoaderDefinition);
+
+        //Twig Environment
+        $twigEnvironmentDefinition = new Definition(Environment::class,[
+            new Reference('twig.loader'),
+            [
+                'cache'=>'%template_cache_dir%',
+                'auto_reload'=>'%kernel.debug%'
+            ]
+        ]);
+        $container->setDefinition('twig.environment',$twigEnvironmentDefinition);
+
+        $templateDefinition= new Definition(Template::class,[
+            new Reference('twig.environment')
+        ]);
+        $templateDefinition->addMethodCall('addTemplateDir',['%template_dir%']);
+        $container->setDefinition('template',$templateDefinition);
 
     }
 }

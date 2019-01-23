@@ -12,7 +12,6 @@ framework:
   #
   config_ssl: false
 
-
   # Session Driver
   # Currently, sessions may be saved in the database or as a file on the server. By changing the
   # values below it is possible to select the preferred method (database or file)
@@ -38,15 +37,31 @@ framework:
   # If you are not sure, leave as is is
   http_cache_dir: 'uploads/cache'
 
+  # Template Cache Dir
+  # Directory where template cache files will be stored
+  # Webserver user must have write acess to this directory
+  # If you are not sure, leave as is is
+  template_cache_dir: 'storage/cache/twig'
+
+  # Default Template Dir
+  # Directory where twig templates will be searched by default
+  # If you are not sure, leave as is is
+  template_dir: 'resources/views'
+
   # Default Mandrill Key
   # This is the default mandrill key to be used when clients have not entered their own key
   mandrill_default_key: ''
-
 
   # Timezone for the software
   # This sets the timezone used to determine the current time and date during runtime.
   # Default: Asia/Shanghai
   kernel.timezone: 'Europe/Berlin'
+
+  # Default Locale
+  # This setting determines the default language to use. If the locale cannot be determined
+  # from the request, then the framework will default to the value set here
+  # Default: en-us
+  default_locale: 'en-us'
 
   # Exception Handler Controller
   # Register the controller and method used to display the default error page when an exceptio is

@@ -12,6 +12,8 @@ return array(
     'kernel.exception_listener' => true,
     'listener.middleware' => true,
     'listener.router' => true,
+    'listener.view_response' => true,
+    'locale.local_listener' => true,
     'log' => true,
     'matcher' => true,
     'request' => true,
@@ -28,5 +30,8 @@ return array(
     'session.save_session_listener' => true,
     'session.session_listener' => true,
     'session.session_storage' => true,
+    'template' => true,
+    'twig.environment' => true,
+    'twig.loader' => true,
     'url_generator' => true,
 );

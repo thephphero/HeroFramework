@@ -13,6 +13,7 @@
 
 namespace Core;
 
+use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Debug\Debug;
 use Bundles\FrameworkBundle\Request\Request;
@@ -76,6 +77,7 @@ class Application extends Kernel {
         $contents = require $this->rootDir.'/config/app.php';
         foreach ($contents['bundles'] as $class) {
             yield new $class();
+
         }
 
     }

@@ -11,7 +11,10 @@
  * file that was distributed with this source code.
  */
 
-/*
+
+return [
+
+    /*
    |--------------------------------------------------------------------------
    | Autoloaded Bundles
    |--------------------------------------------------------------------------
@@ -21,12 +24,22 @@
    | this array to grant expanded functionality to the application.
    |
    */
-
-return [
-
     'bundles'=>[
         Bundles\FrameworkBundle\FrameworkBundle::class,
         //Extensions\SecurityBundle\SecurityBundle::class,
         //Extensions\TemplateBundle\TemplateBundle::class
+    ],
+    /*
+   |--------------------------------------------------------------------------
+   | Security Middleware
+   |--------------------------------------------------------------------------
+   |
+   | The bundles listed here will be automatically loaded on the
+   | request to your application. Feel free to add your own middleware classes
+   | to this array to grant or deny permissions.
+   |
+   */
+    'middleware'=>[
+
     ]
 ];

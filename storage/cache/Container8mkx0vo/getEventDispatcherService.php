@@ -7,6 +7,12 @@ use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 $this->services['event_dispatcher'] = $instance = new \Symfony\Component\EventDispatcher\EventDispatcher();
 
+$instance->addListener('kernel.view', array(0 => function () {
+    return ${($_ = isset($this->services['listener.view_response']) ? $this->services['listener.view_response'] : $this->services['listener.view_response'] = new \Bundles\FrameworkBundle\Response\Listeners\ViewResponseListener()) && false ?: '_'};
+}, 1 => 'onKernelView'), 0);
+$instance->addListener('kernel.request', array(0 => function () {
+    return ${($_ = isset($this->services['locale.local_listener']) ? $this->services['locale.local_listener'] : $this->services['locale.local_listener'] = new \Bundles\FrameworkBundle\Locale\LocaleListener()) && false ?: '_'};
+}, 1 => 'onKernelRequest'), 0);
 $instance->addListener('kernel.request', array(0 => function () {
     return ${($_ = isset($this->services['listener.router']) ? $this->services['listener.router'] : $this->load('getListener_RouterService.php')) && false ?: '_'};
 }, 1 => 'onKernelRequest'), 32);

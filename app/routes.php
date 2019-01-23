@@ -11,14 +11,14 @@
  * file that was distributed with this source code.
  */
 
-$router->get('home', 'HomeController::index');
+
 $router->get('login', 'LoginController::index');
 $router->get('logout', 'common\\LoginController::logout');
 $router->post('login_check', 'common\\LoginController::index');
 
-$router->group(['prefix' => 'admin', 'namespace' => 'admin'],function($router){
+$router->group(['middleware'=>'admin','prefix' => 'admin', 'namespace' => 'admin'],function($router){
 
-
+    $router->get('home', 'HomeController::index');
 });
 
 

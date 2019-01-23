@@ -15,7 +15,11 @@
     "symfony/validator": "^3.4",
     "symfony/filesystem": "~3.4",
     "doctrine/orm": "^2.5",
-    "monolog/monolog": "^1.23"
+    "monolog/monolog": "^1.23",
+    "twig/twig":"^2.0",
+    "propel/propel": "~2.0@dev",
+    "symfony/templating": "^3.4"
+
   },
   "autoload": {
     "psr-4": { "": "system/","App\\":"app/" }

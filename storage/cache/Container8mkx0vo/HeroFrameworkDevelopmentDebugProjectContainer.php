@@ -1,6 +1,6 @@
 <?php
 
-namespace ContainerJehdceq;
+namespace Container8mkx0vo;
 
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,6 +44,8 @@ class HeroFrameworkDevelopmentDebugProjectContainer extends Container
             'kernel.exception_listener' => 'getKernel_ExceptionListenerService.php',
             'listener.middleware' => 'getListener_MiddlewareService.php',
             'listener.router' => 'getListener_RouterService.php',
+            'listener.view_response' => 'getListener_ViewResponseService.php',
+            'locale.local_listener' => 'getLocale_LocalListenerService.php',
             'log' => 'getLogService.php',
             'matcher' => 'getMatcherService.php',
             'request' => 'getRequestService.php',
@@ -60,6 +62,9 @@ class HeroFrameworkDevelopmentDebugProjectContainer extends Container
             'session.save_session_listener' => 'getSession_SaveSessionListenerService.php',
             'session.session_listener' => 'getSession_SessionListenerService.php',
             'session.session_storage' => 'getSession_SessionStorageService.php',
+            'template' => 'getTemplateService.php',
+            'twig.environment' => 'getTwig_EnvironmentService.php',
+            'twig.loader' => 'getTwig_LoaderService.php',
             'url_generator' => 'getUrlGeneratorService.php',
         );
         $this->privates = array(
@@ -72,6 +77,8 @@ class HeroFrameworkDevelopmentDebugProjectContainer extends Container
             'kernel.exception_listener' => true,
             'listener.middleware' => true,
             'listener.router' => true,
+            'listener.view_response' => true,
+            'locale.local_listener' => true,
             'log' => true,
             'matcher' => true,
             'request' => true,
@@ -88,6 +95,9 @@ class HeroFrameworkDevelopmentDebugProjectContainer extends Container
             'session.save_session_listener' => true,
             'session.session_listener' => true,
             'session.session_storage' => true,
+            'template' => true,
+            'twig.environment' => true,
+            'twig.loader' => true,
             'url_generator' => true,
         );
 
@@ -258,6 +268,9 @@ class HeroFrameworkDevelopmentDebugProjectContainer extends Container
             'request_listener.http_port' => 80,
             'request_listener.https_port' => 445,
             'session_dir' => 'storage/sessions',
+            'default_locale' => 'en-us',
+            'template_cache_dir' => 'storage/cache/twig',
+            'template_dir' => 'resources/views',
             'base_url' => 'thephphero.local',
             'DB_HOST' => 'localhost',
             'DB_USER' => 'root',
