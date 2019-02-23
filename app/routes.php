@@ -12,16 +12,21 @@
  */
 
 
-$router->get('login', 'LoginController::index');
-$router->get('logout', 'common\\LoginController::logout');
-$router->post('login_check', 'common\\LoginController::index');
 
-$router->group(['middleware'=>'admin','prefix' => 'admin', 'namespace' => 'admin'],function($router){
+
+$router->group(['middleware'=>['admin'],'prefix' => 'admin', 'namespace' => 'admin'],function($router){
 
     $router->get('home', 'HomeController::index');
 });
 
 
+
+$router->group(['middleware'=>'web','prefix' => 'web', 'namespace' => '/'],function($router){
+
+    $router->get('login', 'LoginController::index');
+    $router->get('logout', 'common\\LoginController::logout');
+    $router->post('login_check', 'common\\LoginController::index');
+});
 
 
 

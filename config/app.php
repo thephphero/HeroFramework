@@ -40,6 +40,6 @@ return [
    |
    */
     'middleware'=>[
-
+        'admin' => \Bundles\SecurityBundle\Middleware\UserPermissionMiddleware::class
     ]
 ];

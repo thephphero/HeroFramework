@@ -23,7 +23,7 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Closure;
 use Bundles\FrameworkBundle\Routing\RouteGroup;
 use Bundles\FrameworkBundle\Support\Traits\Macroable;
-
+use Bundles\FrameworkBundle\Support\Collection;
 
 
 
@@ -136,16 +136,17 @@ class RouteLoader extends Loader{
 
     protected function addRoute($methods, $uri, $action)
     {
-        $route = $this->createRoute($methods, $uri, $action);
-
         $routeName = RouteNameCreator::createRouteName($methods,$this->prefix($uri));
+
+        $route = $this->createRoute($methods, $uri, $action, $routeName);
+
         $this->routes->add($routeName,$route);
 
         return $route;
     }
 
 
-    protected function createRoute($methods, $uri, $action)
+    protected function createRoute($methods, $uri, $action, $routeName)
     {
         // If the route is routing to a controller we will parse the route action into
         // an acceptable array format before registering it and creating this route
@@ -155,7 +156,7 @@ class RouteLoader extends Loader{
             $action = $this->convertToControllerAction($action);
         }
 
-        $route = $this->newRoute($methods, $this->prefix($uri), $action);
+        $route = $this->newRoute($methods, $this->prefix($uri), $action, $routeName);
 
         // If we have groups that need to be merged, we will merge them now after this
         // route has already been created and is ready to go. After we're done with
@@ -163,6 +164,10 @@ class RouteLoader extends Loader{
         if ($this->hasGroupStack()) {
 
             $this->mergeGroupAttributesIntoRoute($route);
+        }
+
+        if(array_key_exists('middleware',$route->parameters)){
+            $this->gatherRouteMiddlewares($route);
         }
 
         $this->addWhereClausesToRoute($route);
@@ -303,7 +308,7 @@ class RouteLoader extends Loader{
     /**
      * Set the route collection instance.
      *
-     * @param  \Library\Routing\RouteCollection  $routes
+     * @param  RouteCollection  $routes
      * @return void
      */
     public function setRoutes(RouteCollection $routes)
@@ -348,28 +353,29 @@ class RouteLoader extends Loader{
      * @param  mixed  $action
      * @return \Library\Routing\Route
      */
-    protected function newRoute($methods, $uri, $action)
+    protected function newRoute($methods, $uri, $action, $name='')
     {
 
-        return (new Route($methods, $uri, $action));
+        return (new Route($methods, $uri, $action, $name));
     }
 
     /**
      * Merge the group stack with the controller action.
      *
-     * @param  \Library\Routing\Route  $route
+     * @param  Route  $route
      * @return void
      */
     protected function mergeGroupAttributesIntoRoute($route)
     {
+
         $route->setAction($this->mergeWithLastGroup($route->getAction()));
     }
 
     /**
      * Add the necessary where clauses to the route based on its initial registration.
      *
-     * @param  \Library\Routing\Route  $route
-     * @return \Library\Routing\Route
+     * @param  Route  $route
+     * @return Route
      */
     protected function addWhereClausesToRoute($route)
     {
@@ -401,6 +407,7 @@ class RouteLoader extends Loader{
      */
     public function gatherRouteMiddlewares(Route $route)
     {
+
         return Collection::make($route->middleware())->map(function ($name) {
             return Collection::make($this->resolveMiddlewareClassName($name));
         })
@@ -421,6 +428,7 @@ class RouteLoader extends Loader{
         // of middlewares that belong to the group. This allows developers to group a
         // set of middleware under single keys that can be conveniently referenced.
         if (isset($this->middlewareGroups[$name])) {
+
             return $this->parseMiddlewareGroup($name);
             // When the middleware is simply a Closure, we will return this Closure instance
             // directly so that Closures can be registered as middleware inline, which is
@@ -431,10 +439,14 @@ class RouteLoader extends Loader{
             // middleware name will get parsed into the full class name and parameters
             // which may be run using the Pipeline which accepts this string format.
         } else {
-            list($name, $parameters) = array_pad(explode(':', $name, 2), 2, null);
 
-            return (isset($map[$name]) ? $map[$name] : $name).
-                ($parameters !== null ? ':'.$parameters : '');
+            $map = $this->config->get('middleware',[]);
+            $middleware = (isset($map[$name]) ? $map[$name] : null );
+
+            //list($name, $parameters) = array_pad(explode(':', $name, 2), 2, null);
+            //$middleware=(isset($map[$name]) ? $map[$name] : $name). ($parameters !== null ? ':'.$parameters : '');
+
+            return $middleware;
         }
     }
 

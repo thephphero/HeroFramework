@@ -42,9 +42,11 @@ class MiddlewareListener implements  EventSubscriberInterface{
         $request = $event->getRequest();
 
         $routeName = $request->attributes->get('_route');
+
         if (!$route = $this->container->get('routing.route_collection')->get($routeName)) {
             return;
         }
+        var_dump($route->getOption('_before_middlewares'));
         foreach ((array) $route->getOption('_before_middlewares') as $callback) {
 
             $ret = call_user_func($this->container->get('callback_resolver')->resolveCallback($callback), $request, $this->container);
@@ -82,7 +84,7 @@ class MiddlewareListener implements  EventSubscriberInterface{
     {
         return array(
             // this must be executed after the late events defined with before() (and their priority is -512)
-            KernelEvents::REQUEST => array('onKernelRequest', 34),
+            KernelEvents::REQUEST => array('onKernelRequest', -34),
             KernelEvents::RESPONSE => array('onKernelResponse', 128),
         );
     }

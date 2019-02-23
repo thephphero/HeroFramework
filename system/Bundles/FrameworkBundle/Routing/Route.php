@@ -13,13 +13,14 @@
 
 namespace Bundles\FrameworkBundle\Routing;
 
+use Bundles\FrameworkBundle\Interfaces\BeforeMiddlewareInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\Route as SymfonyRoute;
 use Bundles\FrameworkBundle\Routing\RouteAction;
 use Symfony\Component\Routing\RouteCompiler;
 use Symfony\Component\Routing\RouterInterface;
-
+use Bundles\FrameworkBundle\Support\Arr;
 class Route extends SymfonyRoute{
 
     /**
@@ -90,7 +91,7 @@ class Route extends SymfonyRoute{
      */
     public static $validators;
 
-    public function __construct($methods=array(),$uri,$action){
+    public function __construct($methods=array(),$uri,$action, $name=''){
 
         $this->uri = $uri;
         $this->methods = (array) $methods;
@@ -110,9 +111,7 @@ class Route extends SymfonyRoute{
         $this->setPath($uri);
 
         $this->setDefault('_controller',$action['controller']);
-
-
-
+        $this->setDefault('_route',$name);
         $this->setOptions(['compiler_class'=>'Symfony\\Component\\Routing\\RouteCompiler']);
 
     }
@@ -224,15 +223,21 @@ class Route extends SymfonyRoute{
     public function middleware($middleware = null)
     {
         if (is_null($middleware)) {
-            return (array) Arr::get($this->action, 'middleware', []);
+            //return (array) Arr::get($this->action, 'middleware', []);
+            return (array) Arr::get($this->parameters, 'middleware', []);
         }
 
         if (is_string($middleware)) {
+var_dump('hey');
+            $reflection = new \ReflectionClass($middleware);
+            if($instance=$reflection->newInstance() instanceof BeforeMiddlewareInterface){
+                $this->addOptions(['_before_middlewares'=>$instance]);
+            }
             $middleware = [$middleware];
         }
 
-        $this->action['middleware'] = array_merge(
-            (array) Arr::get($this->action, 'middleware', []), $middleware
+        $this->parameters['middleware'] = array_merge(
+            (array) Arr::get($this->parameters, 'middleware', []), $middleware
         );
 
         return $this;

@@ -99,6 +99,23 @@ class Arr{
         static::forget($array, $keys);
         return $array;
     }
+
+    /**
+     * Flatten a multi-dimensional array into a single level.
+     *
+     * @param  array  $array
+     * @return array
+     */
+    public static function flatten($array)
+    {
+        $return = [];
+        array_walk_recursive($array, function ($x) use (&$return) {
+            $return[] = $x;
+        });
+        return $return;
+    }
+
+
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *

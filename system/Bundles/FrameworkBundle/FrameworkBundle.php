@@ -15,6 +15,7 @@ namespace Bundles\FrameworkBundle;
 
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\ErrorSubscriberPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\LogPass;
+use Bundles\FrameworkBundle\DependencyInjection\Compiler\RegisterMiddlewarePass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\RouteCollectionPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\SessionStoragePass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\ContainerBuilderDebugDumpPass;
@@ -37,6 +38,7 @@ class FrameworkBundle extends Bundle{
         $container->addCompilerPass(new SessionStoragePass());
         $container->addCompilerPass(new LogPass());
         $container->addCompilerPass(new ErrorSubscriberPass());
+        $container->addCompilerPass(new RegisterMiddlewarePass(true));
     }
 
 
