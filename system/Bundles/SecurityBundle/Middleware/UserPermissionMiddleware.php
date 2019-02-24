@@ -22,6 +22,6 @@ class UserPermissionMiddleware implements BeforeMiddlewareInterface{
 
     public function handle(Request $request, ContainerInterface $container)
     {
-        echo'hi there';
+
     }
 }

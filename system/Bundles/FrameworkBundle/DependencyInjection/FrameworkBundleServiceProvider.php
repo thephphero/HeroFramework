@@ -240,10 +240,11 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         //Translator
         $translatorDefinition=new Definition(Language::class,[
             new Reference('request'),
-            '%default_locale%'
+            '%translator.fallbacks%',
+            '%translator.paths%'
         ]);
         $translatorDefinition->addMethodCall('load',['%root_dir%']);
-        $container->set('locale.translator',$translatorDefinition);
+        $container->setDefinition('locale.translator',$translatorDefinition);
 
         //Twig Loader
         $twigLoaderDefinition = new Definition(\Twig_Loader_Filesystem::class,[

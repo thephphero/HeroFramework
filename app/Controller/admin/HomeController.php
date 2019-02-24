@@ -17,7 +17,9 @@ class HomeController extends Controller{
 
     public function index(Request $request){
 
-        return $this->get('template')->render('admin/templates/dashboard.html',['name'=>'Celso']);
+        $translation = $this->container->get('locale.translator')->translate('admin.greetings');
+
+        return $this->get('template')->render('admin/templates/dashboard.html',['name'=>'Celso','greetings'=>$translation]);
       //  return new Response("Hi");
     }
 }

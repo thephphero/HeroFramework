@@ -19,9 +19,9 @@ class LocaleListener{
 
         $browserLocale = $this->getBrowserLanguage($request);
 
-        $locale = $request->attributes->get('_locale',$browserLocale);
+        $locale = $request->getLocale();
 
-        $request->setLocale($locale);
+       // $request->setLocale($locale);
     }
 
     private function getBrowserLanguage(Request $request){

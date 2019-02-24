@@ -61,7 +61,10 @@ framework:
   # This setting determines the default language to use. If the locale cannot be determined
   # from the request, then the framework will default to the value set here
   # Default: en-us
-  default_locale: 'en-us'
+  translator:
+    fallbacks: [en]
+    paths:
+      - '%kernel.root_dir%/language'
 
   # Exception Handler Controller
   # Register the controller and method used to display the default error page when an exceptio is

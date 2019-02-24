@@ -23,37 +23,46 @@ class Language{
 
     protected $defaultLocale;
 
-    private $data = array();
-
     private $iso_locale;
 
-    private $directory = array();
+    private $paths = array();
 
     protected $translator;
 
-    public function __construct(Request $request, $defaultLocale)
-    {
-        $this->defaultLocale = $defaultLocale;
+    private $fallbacks=[];
 
-        if($locale=$request->locale()){
+    public function __construct(Request $request, array $fallbacks , $paths=[])
+    {
+        $this->fallbacks = $fallbacks;
+
+        if($locale=$request->getLocale()){
             $this->iso_locale = $locale;
         }
 
+        $this->paths = $paths;
+
     }
 
-    protected function load($rootPath) {
+    public function load($rootPath) {
 
         $translator = new Translator($this->iso_locale, new MessageSelector());
 
+        //Add loader
         $translator->addLoader('php',new PhpFileLoader());
+
+        //Set fallback locale
+        $translator->setFallbackLocales($this->fallbacks);
 
         //Default language file
         $defaultFile = $rootPath . DIRECTORY_SEPARATOR.'language'.DIRECTORY_SEPARATOR.strtolower($this->iso_locale.'.php');
-        array_push($this->directory,$defaultFile);
+        if(empty($this->paths) && file_exists($defaultFile)){
 
-        if(is_array($this->directory)){
+            array_push($this->paths,$defaultFile);
+        }
 
-            foreach ($this->directory as $dir){
+        if(is_array($this->paths)){
+
+            foreach ($this->paths as $dir){
 
                 $file = $dir.DIRECTORY_SEPARATOR.strtolower($this->iso_locale.'.php');
 
@@ -67,12 +76,14 @@ class Language{
         $this->translator=$translator;
     }
 
-    public function get($key) {
-        return (isset($this->data[$key]) ? $this->data[$key] : $key);
+    public function translate($id, array $parameters = [], $domain = null, $locale = null) {
+
+        if(!$this->translator){
+            return;
+        }
+
+        return $this->translator->trans($id, $parameters , $domain , $locale );
     }
 
 
-    public function all() {
-        return $this->data;
-    }
 }

@@ -40,7 +40,8 @@ class FrameworkExtension extends Extension{
         $container->setParameter('request_listener.https_port', 445);
         $container->setParameter('session_dir',$config['session_dir']);
         $container->setParameter('root_dir',$container->getParameter('kernel.root_dir'));
-        $container->setParameter('default_locale',$config['default_locale']);
+        $container->setParameter('translator.fallbacks',$config['translator']['fallbacks']);
+        $container->setParameter('translator.paths',$config['translator']['paths']);
         $container->setParameter('template_cache_dir',$config['template_cache_dir']);
         $container->setParameter('template_dir',$config['template_dir']);
 
