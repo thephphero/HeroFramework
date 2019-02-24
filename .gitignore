@@ -3,4 +3,5 @@
 .DS_Store
 .env
 vendor
+app/Controller/*
 storage/*
