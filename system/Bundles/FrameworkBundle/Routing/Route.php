@@ -223,12 +223,13 @@ class Route extends SymfonyRoute{
     public function middleware($middleware = null)
     {
         if (is_null($middleware)) {
+
             //return (array) Arr::get($this->action, 'middleware', []);
             return (array) Arr::get($this->parameters, 'middleware', []);
         }
 
         if (is_string($middleware)) {
-var_dump('hey');
+
             $reflection = new \ReflectionClass($middleware);
             if($instance=$reflection->newInstance() instanceof BeforeMiddlewareInterface){
                 $this->addOptions(['_before_middlewares'=>$instance]);

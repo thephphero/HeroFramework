@@ -6,7 +6,7 @@
  * Time: 17:25
  */
 
-namespace App\admin;
+namespace App\Controller\admin;
 
 use Bundles\FrameworkBundle\Controller\Controller;
 use Bundles\FrameworkBundle\Request\Request;
@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 class HomeController extends Controller{
 
     public function index(Request $request){
+
         return $this->get('template')->render('admin/templates/dashboard.html',['name'=>'Celso']);
       //  return new Response("Hi");
     }

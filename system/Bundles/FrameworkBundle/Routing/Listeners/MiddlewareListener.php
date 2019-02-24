@@ -13,8 +13,9 @@
 
 namespace Bundles\FrameworkBundle\Routing\Listeners;
 
+use Bundles\FrameworkBundle\Interfaces\MiddlewareInterface;
+use Bundles\FrameworkBundle\Routing\CallbackResolver;
 use Core\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -44,14 +45,15 @@ class MiddlewareListener implements  EventSubscriberInterface{
         $routeName = $request->attributes->get('_route');
 
         if (!$route = $this->container->get('routing.route_collection')->get($routeName)) {
+
             return;
         }
-        var_dump($route->getOption('_before_middlewares'));
-        foreach ((array) $route->getOption('_before_middlewares') as $callback) {
 
-            $ret = call_user_func($this->container->get('callback_resolver')->resolveCallback($callback), $request, $this->container);
-            if ($ret instanceof Response) {
-                $event->setResponse($ret);
+        foreach ((array) $route->getOption('_before_middlewares') as $callback) {
+            $cbResolver = new CallbackResolver($this->container);
+            $ret = $cbResolver->resolveCallback($callback[0]);
+            if($ret instanceof MiddlewareInterface) {
+                $ret->handle($request,$this->container);
                 return;
             } elseif (null !== $ret) {
                 throw new \RuntimeException(sprintf('A before middleware for route "%s" returned an invalid response value. Must return null or an instance of Response.', $routeName));
@@ -84,7 +86,7 @@ class MiddlewareListener implements  EventSubscriberInterface{
     {
         return array(
             // this must be executed after the late events defined with before() (and their priority is -512)
-            KernelEvents::REQUEST => array('onKernelRequest', -34),
+            KernelEvents::REQUEST => array('onKernelRequest', -512),
             KernelEvents::RESPONSE => array('onKernelResponse', 128),
         );
     }

@@ -66,13 +66,15 @@ class RouteLoader extends Loader{
 
     public static $verbs = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
-    protected $namespace = 'App';
+    protected $namespace = 'App\\Controller';
 
-    public function __construct(Request $request , Config $config)
+    public function __construct(Request $request , Config $config, RouteCollection $routes)
     {
         $this->request=$request;
 
         $this->config=$config;
+
+        $this->routes = $routes;
 
         $this->file = $config->get('kernel.root_dir').DIRECTORY_SEPARATOR.'app/routes.php';
 
@@ -167,7 +169,9 @@ class RouteLoader extends Loader{
         }
 
         if(array_key_exists('middleware',$route->parameters)){
-            $this->gatherRouteMiddlewares($route);
+
+            $route->setOptions(['_before_middlewares'=>$this->gatherRouteMiddlewares($route)]);
+
         }
 
         $this->addWhereClausesToRoute($route);
@@ -496,7 +500,6 @@ class RouteLoader extends Loader{
             throw new \RuntimeException('Do not add the "file" route loader twice');
         }
 
-        $this->routes = new RouteCollection();
 
         if ($this->file instanceof Closure) {
             $this->file($this);

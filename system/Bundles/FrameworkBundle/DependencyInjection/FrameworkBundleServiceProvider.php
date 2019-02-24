@@ -86,7 +86,8 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         //Route Loader
         $routeLoaderDefinition = new Definition(RouteLoader::class,[
             new Reference('request'),
-            new Reference('config')
+            new Reference('config'),
+            new Reference('routing.route_collection')
         ]);
         $container->setDefinition('routing.route_loader',$routeLoaderDefinition);
 
@@ -246,7 +247,7 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
 
         //Twig Loader
         $twigLoaderDefinition = new Definition(\Twig_Loader_Filesystem::class,[
-            'app',
+            'app/Controller',
             '%kernel.root_dir%'
         ]);
         $container->setDefinition('twig.loader',$twigLoaderDefinition);
