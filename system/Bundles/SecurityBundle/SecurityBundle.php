@@ -13,17 +13,12 @@
 
 namespace Bundles\SecurityBundle;
 
+use Bundles\SecurityBundle\DependencyInjection\Compiler\AddMiddlewarePass;
 use Bundles\SecurityBundle\DependencyInjection\Compiler\EntryPointPass;
 use Bundles\SecurityBundle\DependencyInjection\Compiler\OverrideAnonymousUserCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Bundles\SecurityBundle\DependencyInjection\Compiler\AddMiddlewarePass;
-use Bundles\SecurityBundle\DependencyInjection\Security\Factory\FormLoginFactory;
-use Bundles\SecurityBundle\DependencyInjection\Security\Factory\HttpBasicFactory;
-use Bundles\SecurityBundle\DependencyInjection\Security\Factory\RememberMeFactory;
-use Bundles\SecurityBundle\DependencyInjection\Security\Factory\RemoteUserFactory;
-use Bundles\SecurityBundle\DependencyInjection\Security\UserProvider\InMemoryFactory;
-use Bundles\SecurityBundle\DependencyInjection\Security\Factory\GuardAuthenticationFactory;
+
 
 
 class SecurityBundle extends Bundle{
@@ -34,14 +29,9 @@ class SecurityBundle extends Bundle{
 
         $extension = $container->getExtension('security');
 
-        $extension->addSecurityListenerFactory(new FormLoginFactory());
-        $extension->addSecurityListenerFactory(new HttpBasicFactory());
-        $extension->addSecurityListenerFactory(new RememberMeFactory());
-        $extension->addSecurityListenerFactory(new RemoteUserFactory());
-        $extension->addSecurityListenerFactory(new GuardAuthenticationFactory());
-        $extension->addUserProviderFactory(new InMemoryFactory());
 
-        //$container->addCompilerPass(new OverrideAnonymousUserCompilerPass());
-        $container->addCompilerPass(new AddSecurityVotersPass());
+        $container->addCompilerPass(new OverrideAnonymousUserCompilerPass());
+        $container->addCompilerPass(new AddMiddlewarePass());
+        $container->addCompilerPass(new EntryPointPass());
     }
 }

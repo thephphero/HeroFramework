@@ -48,6 +48,7 @@ security:
         authenticators: [security.guard.form.authenticator]
       logout:
         path:           /logout
+        target:         /
         csrf_parameter: _csrf_token
         csrf_token_id:  logout
         csrf_token_generator: csrf.token_manager

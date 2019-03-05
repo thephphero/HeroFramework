@@ -12,7 +12,7 @@
  */
 
 
-namespace Bundles\FrameworkBundle\Template;
+namespace Bundles\TemplateBundle\Template;
 
 use ProxyManager\Exception\FileNotWritableException;
 use Twig_Loader_Filesystem;

@@ -6,7 +6,7 @@
  * Time: 17:25
  */
 
-namespace App\Controller\admin;
+namespace app\Controller\admin;
 
 use Bundles\FrameworkBundle\Controller\Controller;
 use Bundles\FrameworkBundle\Request\Request;

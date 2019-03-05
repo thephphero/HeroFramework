@@ -26,8 +26,9 @@ return [
    */
     'bundles'=>[
         Bundles\FrameworkBundle\FrameworkBundle::class,
-        //Extensions\SecurityBundle\SecurityBundle::class,
-        //Extensions\TemplateBundle\TemplateBundle::class
+        Bundles\SecurityBundle\SecurityBundle::class,
+        Bundles\TemplateBundle\TemplateBundle::class,
+
     ],
     /*
    |--------------------------------------------------------------------------

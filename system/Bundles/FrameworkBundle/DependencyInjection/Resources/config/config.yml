@@ -37,17 +37,6 @@ framework:
   # If you are not sure, leave as is is
   http_cache_dir: 'uploads/cache'
 
-  # Template Cache Dir
-  # Directory where template cache files will be stored
-  # Webserver user must have write acess to this directory
-  # If you are not sure, leave as is is
-  template_cache_dir: 'storage/cache/twig'
-
-  # Default Template Dir
-  # Directory where twig templates will be searched by default
-  # If you are not sure, leave as is is
-  template_dir: 'resources/views'
-
   # Default Mandrill Key
   # This is the default mandrill key to be used when clients have not entered their own key
   mandrill_default_key: ''

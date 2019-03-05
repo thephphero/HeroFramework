@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Bundles\FrameworkBundle\Template;
+namespace Bundles\TemplateBundle\Template;
 
 use Twig\Environment;
 

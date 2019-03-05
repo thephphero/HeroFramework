@@ -30,6 +30,7 @@ class FrameworkExtension extends Extension{
         $this->registerSessionConfiguration($configs[0],$container);
         $this->registerDefaultControllerConfiguration($configs[0],$container);
 
+
     }
 
     private function registerContainerVariables(array $config, ContainerBuilder $container){
@@ -42,8 +43,6 @@ class FrameworkExtension extends Extension{
         $container->setParameter('root_dir',$container->getParameter('kernel.root_dir'));
         $container->setParameter('translator.fallbacks',$config['translator']['fallbacks']);
         $container->setParameter('translator.paths',$config['translator']['paths']);
-        $container->setParameter('template_cache_dir',$config['template_cache_dir']);
-        $container->setParameter('template_dir',$config['template_dir']);
 
         $container->setParameter('base_url',getenv('BASE_URL'));
         $container->setParameter('DB_HOST',getenv('DB_HOST'));
@@ -81,6 +80,8 @@ class FrameworkExtension extends Extension{
             }
         }
     }
+
+
 
 
 }

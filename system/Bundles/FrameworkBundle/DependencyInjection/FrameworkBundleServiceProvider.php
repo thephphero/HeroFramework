@@ -246,28 +246,7 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         $translatorDefinition->addMethodCall('load',['%root_dir%']);
         $container->setDefinition('locale.translator',$translatorDefinition);
 
-        //Twig Loader
-        $twigLoaderDefinition = new Definition(\Twig_Loader_Filesystem::class,[
-            'app/Controller',
-            '%kernel.root_dir%'
-        ]);
-        $container->setDefinition('twig.loader',$twigLoaderDefinition);
 
-        //Twig Environment
-        $twigEnvironmentDefinition = new Definition(Environment::class,[
-            new Reference('twig.loader'),
-            [
-                'cache'=>'%template_cache_dir%',
-                'auto_reload'=>'%kernel.debug%'
-            ]
-        ]);
-        $container->setDefinition('twig.environment',$twigEnvironmentDefinition);
-
-        $templateDefinition= new Definition(Template::class,[
-            new Reference('twig.environment')
-        ]);
-        $templateDefinition->addMethodCall('addTemplateDir',['%template_dir%']);
-        $container->setDefinition('template',$templateDefinition);
 
     }
 }

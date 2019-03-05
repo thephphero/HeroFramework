@@ -11,7 +11,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Bundles\SecurityBundle\Security;
+namespace Bundles\SecurityBundle\DependencyInjection;
 
 use Bundles\SecurityBundle\Security\Authenticators\FormAuthenticator;
 use Bundles\SecurityBundle\Security\Authenticators\TokenAuthenticator;
@@ -70,6 +70,10 @@ use Symfony\Component\Security\Http\Firewall\ContextListener;
 use Bundles\SecurityBundle\Security\FirewallMap;
 use Bundles\SecurityBundle\Security\FirewallContext;
 use Bundles\SecurityBundle\Security\Voters\UserPermissionsVoter;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Symfony\Component\Security\Csrf\TokenStorage\SessionTokenStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 class SecurityBundleServiceProvider implements ServiceProviderInterface {
 
@@ -100,6 +104,34 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
     public function register(ContainerBuilder $container){
 
         $providerKey='';
+
+
+        //Token Storage
+        if ($container->has('session')) {
+
+            $tokenStorageDefinition=new Definition(SessionTokenStorage::class,[
+                new Reference('session'),
+                '_csrf'
+            ]);
+        }
+        else{
+            $tokenStorageDefinition=new Definition(NativeSessionStorage::class,[
+                '_csrf'
+            ]);
+        }
+
+        $container->setDefinition('csrf.token_storage',$tokenStorageDefinition);
+
+        //Token Generator
+        $tokenGeneratorDefinition=new Definition(UriSafeTokenGenerator::class);
+        $container->setDefinition('csrf.token_generator',$tokenGeneratorDefinition);
+
+        //Token Manager
+        $tokenManagerDefinition=new Definition(CsrfTokenManager::class,[
+            new Reference('csrf.token_generator'),
+            new Reference('csrf.token_storage')
+        ]);
+        $container->setDefinition('csrf.token_manager',$tokenManagerDefinition);
 
         //$container->setParameter('security.access_rules',[]);
         $container->setParameter('security.hide_user_not_found',true);
@@ -195,7 +227,7 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         $formEntryPointDefinition=new Definition(FormAuthenticationEntryPoint::class,[
             new Reference('http_kernel'),
             new Reference('security.http_utils'),
-            new Reference('login'),
+           'login',
             true
         ]);
         $container->setDefinition('security.authentication.form_entry_point',$formEntryPointDefinition);
@@ -262,8 +294,7 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
 
         //Default User Providers
         $userProviderDefaultDefinition=new Definition(UserProvider::class,[
-            new Reference('db'),
-            new Reference('project')
+            new Reference('db')
         ]);
         $container->setDefinition('security.provider.user',$userProviderDefaultDefinition);
 
@@ -344,13 +375,11 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         ]);
         $container->setDefinition('security.guard.shop.authenticator',$shopFormAuthenticatorDefinition);
 
-
         //API Key Authenticator
         $tokenAuthenticationDefinition=new Definition(TokenAuthenticator::class,[
             new Reference('security.encoder.password')
         ]);
         $container->setDefinition('security.token.authenticator',$tokenAuthenticationDefinition);
-
 
         //Guard Auth Provider
         $authenticationProviderGuardDefinition=new Definition(GuardAuthenticationProvider::class,[
@@ -537,7 +566,6 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         ]);
         $container->setDefinition('security.firewall.map',$firewallMapDefinition);
 
-
         //Firewall Context
         $firewallContextDefinition=new Definition(FirewallContext::class,[
             array(),
@@ -576,7 +604,6 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
             $container->setDefinition('security.validator.user_password_validator',$passwordValidatorDefinition);
 
             $container->setParameter('validator.validator_service_ids',array_merge($container->getParameter('validator.validator_service_ids'), array('security.validator.user_password' => 'security.validator.user_password_validator')));
-
         }
 
         //Firewall
@@ -591,8 +618,6 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         if ($token=$container->get('security.token_storage')->getToken()) {
             $container->setParameter('user', $token->getUser());
         }
-
-
     }
 
 }
