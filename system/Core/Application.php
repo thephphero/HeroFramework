@@ -17,6 +17,8 @@ use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Debug\Debug;
 use Bundles\FrameworkBundle\Request\Request;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
@@ -65,8 +67,8 @@ class Application extends Kernel {
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         foreach ($this->bundles as $bundle){
-            if(file_exists($bundle->getPath().DIRECTORY_SEPARATOR.'DependencyInjection/Resources/config/config.yml')){
-                $loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'DependencyInjection/Resources/config/config.yml');
+            if(file_exists($bundle->getPath().DIRECTORY_SEPARATOR.'Resources/config/config.yml')){
+                //$loader->load($bundle->getPath().DIRECTORY_SEPARATOR.'Resources/config/config.yml');
             }
         }
 

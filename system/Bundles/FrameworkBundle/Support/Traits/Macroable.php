@@ -13,6 +13,8 @@
 namespace Bundles\FrameworkBundle\Support\Traits;
 use Closure;
 use BadMethodCallException;
+use ReflectionClass;
+use ReflectionMethod;
 
 trait Macroable
 {

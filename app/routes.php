@@ -21,11 +21,9 @@ $router->group(['middleware'=>['admin'],'prefix' => 'admin', 'namespace' => 'adm
 
 
 
-$router->group(['middleware'=>'web','prefix' => 'web', 'namespace' => '/'],function($router){
+$router->group(['middleware'=>'web'],function($router){
+    $router->get('home', 'HomeController::index');
 
-    $router->get('login', 'LoginController::index');
-    $router->get('logout', 'common\\LoginController::logout');
-    $router->post('login_check', 'common\\LoginController::index');
 });
 
 

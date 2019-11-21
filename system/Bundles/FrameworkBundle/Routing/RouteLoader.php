@@ -33,7 +33,6 @@ class RouteLoader extends Loader{
         __call as macroCall;
     }
 
-    private $file;
 
     private $loaded = false;
 
@@ -74,9 +73,8 @@ class RouteLoader extends Loader{
 
         $this->config=$config;
 
-        $this->routes = $routes;
+        $this->routes = new RouteCollection();
 
-        $this->file = $config->get('kernel.root_dir').DIRECTORY_SEPARATOR.'app/routes.php';
 
     }
 
@@ -501,17 +499,17 @@ class RouteLoader extends Loader{
         }
 
 
-        if ($this->file instanceof Closure) {
-            $this->file($this);
+        if ($resource instanceof Closure) {
+            $resource($this);
         } else {
             $router = $this;
 
             $router->group(['namespace' => $this->namespace], function ($router) use($resource) {
 
-                if(!is_file($this->file)){
-                    throw new FileNotFoundException($this->file);
+                if(!is_file($resource)){
+                    throw new FileNotFoundException($resource);
                 }
-                require $this->file;
+                require $resource;
             });
 
         }

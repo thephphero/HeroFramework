@@ -17,6 +17,7 @@ use Bundles\SecurityBundle\DependencyInjection\Compiler\AddMiddlewarePass;
 use Bundles\SecurityBundle\DependencyInjection\Compiler\EntryPointPass;
 use Bundles\SecurityBundle\DependencyInjection\Compiler\OverrideAnonymousUserCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 
@@ -27,8 +28,7 @@ class SecurityBundle extends Bundle{
     {
         parent::build($container);
 
-        $extension = $container->getExtension('security');
-
+        //$extension = $container->getExtension('security');
 
         $container->addCompilerPass(new OverrideAnonymousUserCompilerPass());
         $container->addCompilerPass(new AddMiddlewarePass());

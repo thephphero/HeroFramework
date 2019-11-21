@@ -13,10 +13,11 @@
 
 namespace Bundles\FrameworkBundle;
 
+use Bundles\FrameworkBundle\DependencyInjection\Compiler\AddConsoleCommandPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\ErrorSubscriberPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\LogPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\RegisterMiddlewarePass;
-use Bundles\FrameworkBundle\DependencyInjection\Compiler\RouteCollectionPass;
+use Bundles\FrameworkBundle\DependencyInjection\Compiler\RoutingResolverPass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\SessionStoragePass;
 use Bundles\FrameworkBundle\DependencyInjection\Compiler\ContainerBuilderDebugDumpPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,12 +35,14 @@ class FrameworkBundle extends Bundle{
 
         $container->addCompilerPass(new RegisterListenersPass(), PassConfig::TYPE_BEFORE_REMOVING);
         $container->addCompilerPass(new ContainerBuilderDebugDumpPass());
-        $container->addCompilerPass(new RouteCollectionPass());
+        $container->addCompilerPass(new RoutingResolverPass());
         $container->addCompilerPass(new SessionStoragePass());
         $container->addCompilerPass(new LogPass());
         $container->addCompilerPass(new ErrorSubscriberPass());
         $container->addCompilerPass(new RegisterMiddlewarePass(true));
+        $container->addCompilerPass(new AddConsoleCommandPass());
     }
+
 
 
 

@@ -10,7 +10,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Bundles\SecurityBundle\Handlers;
+namespace Bundles\SecurityBundle\Security\Handlers;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;

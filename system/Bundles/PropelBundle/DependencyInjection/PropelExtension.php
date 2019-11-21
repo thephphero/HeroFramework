@@ -1,10 +1,16 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: uid20214
+ * The Hero Framework.
+ *
+ * (c) Celso Luiz de F. Fernandes  <celso@thephphero.com>
  * Date: 18.02.2019
  * Time: 15:35
+ * Created by thePHPHero
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
 
 namespace Bundles\PropelBundle\DependencyInjection;
 
@@ -28,5 +34,16 @@ class PropelExtension extends Extension{
 
         $container->setParameter('propel.logging', $config['runtime']['logging']);
         $container->setParameter('propel.configuration', $config);
+        $container->setParameter('propel.dbal.default_connection', $defaultConnection);
+
+        //Service Provider
+        $serviceProvider = new PropelBundleServiceProvider();
+        $serviceProvider->register($container);
+
+        $this->setUserProviderClass($config,$container);
+    }
+
+    public function setUserProviderClass(array $configs, ContainerBuilder $container){
+        $container->setParameter('propel.security.user.provider.class','Bundles\\PropelBundle\\Security\\User\\PropelUserProvider');
     }
 }

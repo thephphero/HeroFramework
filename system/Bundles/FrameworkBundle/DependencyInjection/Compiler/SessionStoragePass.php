@@ -16,6 +16,8 @@ namespace Bundles\FrameworkBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\DependencyInjection\Reference;
 
 class SessionStoragePass implements CompilerPassInterface {
 
@@ -28,6 +30,7 @@ class SessionStoragePass implements CompilerPassInterface {
 
     public function process(ContainerBuilder $container)
     {
+        $configs = $container->getExtensionConfig('framework');
         $container->setParameter('session.options',$this->options);
     }
 }

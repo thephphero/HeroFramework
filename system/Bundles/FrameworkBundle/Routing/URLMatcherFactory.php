@@ -13,6 +13,8 @@
  */
 namespace Bundles\FrameworkBundle\Routing;
 
+use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
@@ -20,15 +22,21 @@ use Symfony\Component\Routing\RequestContext;
 class URLMatcherFactory{
 
     private  $router;
+
     private $context;
+
     private $booted=false;
+
     private $matcher;
+
+
 
     public function __construct(Router $router, RequestContext $context)
     {
         $this->router=$router;
 
         $this->context=$context;
+
 
     }
 
@@ -42,4 +50,6 @@ class URLMatcherFactory{
 
         return $this->matcher;
     }
+
+
 }

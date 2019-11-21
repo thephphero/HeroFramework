@@ -15,6 +15,7 @@ namespace Bundles\SecurityBundle\DependencyInjection;
 
 use Bundles\SecurityBundle\DependencyInjection\SecurityBundleServiceProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
@@ -58,6 +59,15 @@ class SecurityExtension extends Extension{
         $serviceProvider = new SecurityBundleServiceProvider();
         $serviceProvider->register($container);
 
+        $configuration = new Configuration();
+        $this->processConfiguration($configuration, $configs);
+
+        $loader = new YamlFileLoader(
+            $container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
+
+        //$loader->load('routing.yml');
 
         $mainConfig = $this->getConfiguration($configs, $container);
         //$config = $this->processConfiguration($configs[0], $configs);
@@ -108,6 +118,8 @@ class SecurityExtension extends Extension{
             'Bundles\SecurityBundle\Security\FirewallContext',
             'Symfony\Component\HttpFoundation\RequestMatcher',
         ));
+
+
     }
 
     private function createRoleHierarchy($config, ContainerBuilder $container)

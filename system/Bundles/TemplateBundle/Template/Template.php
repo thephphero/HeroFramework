@@ -25,7 +25,7 @@ class Template {
 
     private $auto_reload;
 
-    public function __construct(Environment $environment)
+    public function __construct(Environment $environment, $cache_dir=__DIR__)
     {
 
         if(!$this->loader){
@@ -34,12 +34,12 @@ class Template {
 
         $this->environment = $environment;
 
-       /* if(!file_exists($environment->getLoader())){
+        if(!file_exists($environment->getCache())){
             if(!mkdir($cache_dir,0755)){
-                throw new FileNotWritableException('Template cache dir is not writable!');
+                throw new FileNotWritableException('Template cache directory is not writable!');
             }
         }
-       */
+
 
     }
 

@@ -1,0 +1,11 @@
+template:
+  # Template Cache Dir
+  # Directory where template cache files will be stored
+  # Webserver user must have write acess to this directory
+  # If you are not sure, leave as is is
+  template_cache_dir: 'storage/cache/twig'
+
+  # Default Template Dir
+  # Directory where twig templates will be searched by default
+  # If you are not sure, leave as is is
+  template_dir: 'app/View'

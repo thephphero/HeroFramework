@@ -13,6 +13,7 @@
  */
 namespace Bundles\SecurityBundle\DependencyInjection;
 
+use Bundles\SecurityBundle\Routing\SecurityRouteLoader;
 use Bundles\SecurityBundle\Security\Authenticators\FormAuthenticator;
 use Bundles\SecurityBundle\Security\Authenticators\TokenAuthenticator;
 use Bundles\SecurityBundle\Security\Authenticators\GuardFormAuthenticator;
@@ -26,10 +27,11 @@ use Bundles\SecurityBundle\Security\UserProviders\TokenUserProvider;
 use Bundles\SecurityBundle\Security\UserProviders\UserProvider;
 use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
 use Bundles\SecurityBundle\Security\Handlers\UserAuthenticationFailureHandler;
-use Bundles\SecurityBundle\Handlers\AccessDeniedHandler;
+use Bundles\SecurityBundle\Security\Handlers\AccessDeniedHandler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Routing\Loader\DependencyInjection\ServiceRouterLoader;
 use Symfony\Component\Security\Core\Authentication\Provider\RememberMeAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\HttpFoundation\RequestMatcher;
@@ -49,6 +51,7 @@ use Symfony\Component\Security\Core\User\ChainUserProvider;
 use Symfony\Component\Security\Core\User\InMemoryUserProvider;
 use Symfony\Component\Security\Core\User\UserChecker;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
+use Symfony\Component\Security\Csrf\TokenStorage\NativeSessionTokenStorage;
 use Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider;
@@ -107,19 +110,10 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
 
 
         //Token Storage
-        if ($container->has('session')) {
-
-            $tokenStorageDefinition=new Definition(SessionTokenStorage::class,[
-                new Reference('session'),
-                '_csrf'
-            ]);
-        }
-        else{
-            $tokenStorageDefinition=new Definition(NativeSessionStorage::class,[
-                '_csrf'
-            ]);
-        }
-
+        $tokenStorageDefinition=new Definition(SessionTokenStorage::class,[
+            new Reference('session'),
+            '_csrf'
+        ]);
         $container->setDefinition('csrf.token_storage',$tokenStorageDefinition);
 
         //Token Generator
@@ -181,9 +175,7 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         $container->setDefinition('security.role_hierarchy_voter',$roleHierarchyVoterDefinition);
 
         //User Permissions Voter
-        $userPermissionsVoter=new Definition(UserPermissionsVoter::class,[
-            new Reference('db'),
-        ]);
+        $userPermissionsVoter=new Definition(UserPermissionsVoter::class);
         $userPermissionsVoter->addTag('security.voter');
         $userPermissionsVoter->setPublic(false);
         $container->setDefinition('security.user_permissions_voter',$userPermissionsVoter);
@@ -514,7 +506,7 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
 
 
         //Logout Success handler
-        $logoutSuccessHandlerDefinition=new Definition(PosCustomLogoutSuccessHandler::class,[
+        $logoutSuccessHandlerDefinition=new Definition(DefaultLogoutSuccessHandler::class,[
             new Reference('security.http_utils'),
             '/'
         ]);
@@ -618,6 +610,18 @@ class SecurityBundleServiceProvider implements ServiceProviderInterface {
         if ($token=$container->get('security.token_storage')->getToken()) {
             $container->setParameter('user', $token->getUser());
         }
+
+        //Route loader service
+        $routeLoaderService = new Definition(SecurityRouteLoader::class);
+        $routeLoaderService->addTag('routing.loader');
+        $container->setDefinition('security.route_loader_service', $routeLoaderService);
+
+        //Service Route Loader
+        $securityRouteLoaderDefinition = new Definition(ServiceRouterLoader::class,[
+            new Reference('service_container'),
+        ]);
+        $securityRouteLoaderDefinition->addTag('routing.loader');
+        $container->setDefinition('security.service_route_loader',$securityRouteLoaderDefinition);
     }
 
 }

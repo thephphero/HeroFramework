@@ -25,9 +25,12 @@ class TemplateExtension extends Extension{
         $serviceProvider->register($container);
 
         $this->registerTemplateDir($configs[0],$container);
+
     }
 
     private function registerTemplateDir(array $config, ContainerBuilder $container){
+
+
         $templateDir = $container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.$config['template_dir'];
         if(!file_exists($templateDir)){
             mkdir($templateDir,0775, true);

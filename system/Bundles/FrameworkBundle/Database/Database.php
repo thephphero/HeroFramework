@@ -36,7 +36,7 @@ class Database {
         $host=$config->get('DB_HOST');
         $schema=$config->get('DB_SCHEMA');
         $user=$config->get('DB_USER');
-        $password=$config->get('DB_PASS');
+        $password=$config->get('DB_PASSWORD');
 
         if (!self::$instance)
             self::$instance = new database($host, $schema, $user, $password);
@@ -57,13 +57,13 @@ class Database {
         $dsn = 'mysql:dbname=' . $databaseName . ';host=' . $host . ';charset=utf8';
 
         try {
+            $password = trim($password);
+            $this->pdo = new PDO($dsn, $username, $password, $options);
 
-          //  $this->pdo = new PDO($dsn, $username, $password, $options);
-
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
 
             $this->error = $e->getMessage();
-            throw new Exception($this->error);
+            throw new \Exception($this->error);
         }
     }
 

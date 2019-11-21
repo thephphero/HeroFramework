@@ -16,15 +16,11 @@
 
 require __DIR__ . '/bootstrap/autoload.php';
 
-use Console\Application;
+use Bundles\FrameworkBundle\Console\Application;
 
 $app = new \Core\Application(__DIR__,getenv('ENVIRONMENT'),getenv('DEBUG'));
 
-$application = new Application($app,'NoshPos','3.0');
-
-//$command = new \Console\Commands\LicenseCommand();
-
-//$application->add($command);
+$application = new Application($app,'HeroFramework','1.0');
 
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 

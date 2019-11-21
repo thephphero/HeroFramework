@@ -41,7 +41,8 @@ class TemplateServiceProvider implements ServiceProviderInterface{
         $container->setDefinition('twig.environment',$twigEnvironmentDefinition);
 
         $templateDefinition= new Definition(Template::class,[
-            new Reference('twig.environment')
+            new Reference('twig.environment'),
+            '%template_cache_dir%'
         ]);
         $templateDefinition->addMethodCall('addTemplateDir',['%template_dir%']);
         $container->setDefinition('template',$templateDefinition);

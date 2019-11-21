@@ -15,6 +15,7 @@ namespace Bundles\FrameworkBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
 
 
 class FrameworkExtension extends Extension{
@@ -29,7 +30,7 @@ class FrameworkExtension extends Extension{
         $this->registerContainerVariables($configs[0],$container);
         $this->registerSessionConfiguration($configs[0],$container);
         $this->registerDefaultControllerConfiguration($configs[0],$container);
-
+        $this->registerRouterOptions($configs[0],$container);
 
     }
 
@@ -67,7 +68,7 @@ class FrameworkExtension extends Extension{
                 break;
 
             default:
-                $sessionDefinition->replaceArgument(1,new Reference('session.pdo_session_handler'));
+                $sessionDefinition->replaceArgument(1,new Reference('session.file_session_handler'));
                 break;
         }
 
@@ -79,6 +80,20 @@ class FrameworkExtension extends Extension{
                 $container->setParameter($key,$route);
             }
         }
+    }
+
+    private function registerRouterOptions(array $config, ContainerBuilder $container){
+        $options=[];
+        $options['cache_dir'] = $container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.$config['routes_cache_dir'];
+        $options['matcher_class'] = UrlMatcher::class;
+        $options['resource_type'] = $config['routes']['type'];
+
+
+        //Resource
+        $resource = $container->getParameter('kernel.root_dir').DIRECTORY_SEPARATOR.$config['routes']['resource'];
+        $routerDefinition = $container->getDefinition('router');
+        $routerDefinition->replaceArgument(1,$resource);
+        $routerDefinition->replaceArgument(2,$options);
     }
 
 

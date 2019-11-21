@@ -22,11 +22,11 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 class UserProvider implements UserProviderInterface{
-    private $db;
 
-    public function __construct(\PDO $db)
+
+    public function __construct()
     {
-        $this->db = $db;
+
 
     }
 

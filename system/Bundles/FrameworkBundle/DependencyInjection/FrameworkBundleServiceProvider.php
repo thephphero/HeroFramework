@@ -15,8 +15,12 @@ namespace Bundles\FrameworkBundle\DependencyInjection;
 
 use Bundles\FrameworkBundle\Locale\Language;
 use Bundles\FrameworkBundle\Locale\LocaleListener;
+use Bundles\FrameworkBundle\Command\CreatePdoStorageCommand;
+use Bundles\FrameworkBundle\Routing\URLMatcherFactory;
 use Bundles\FrameworkBundle\Template\Template;
 use Bundles\FrameworkBundle\Template\TemplateFactory;
+use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Bundles\FrameworkBundle\Interfaces\ServiceProviderInterface;
@@ -41,7 +45,6 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Router;
 use Bundles\FrameworkBundle\Routing\Listeners\MiddlewareListener;
 use Bundles\FrameworkBundle\Routing\RouteLoader;
-use Bundles\FrameworkBundle\Routing\URLMatcherFactory;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -83,18 +86,32 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         ]);
         $container->setDefinition('url_generator',$generatorDefinition);
 
+
         //Route Loader
         $routeLoaderDefinition = new Definition(RouteLoader::class,[
             new Reference('request'),
             new Reference('config'),
             new Reference('routing.route_collection')
         ]);
+        $routeLoaderDefinition->addTag('routing.loader');
         $container->setDefinition('routing.route_loader',$routeLoaderDefinition);
+
+        //Route Loader Resolver
+        $loaderResolverDefinition = new Definition(LoaderResolver::class,[
+            [] //Set in RouterResolverPass.php
+        ]);
+        $container->setDefinition('routing.loader_resolver',$loaderResolverDefinition);
+
+        //Delegating Loader
+        $delegationLoaderDefinition = new Definition(DelegatingLoader::class,[
+            new Reference('routing.loader_resolver')
+        ]);
+        $container->setDefinition('routing.delegating_loader',$delegationLoaderDefinition);
 
         //Router
         $routerDefinition = new Definition(Router::class,[
-            new Reference('routing.route_loader'),
-            null,
+            new Reference('routing.delegating_loader'),
+            null,// Set in FrameworkExtension.php
             $options=array(),
             new Reference('context'),
             new Reference('log')
@@ -161,7 +178,7 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
 
         //Config class
         $definition = new Definition(Config::class,[
-                new Reference('service_container') ]
+            new Reference('service_container') ]
         );
         $container->setDefinition('config',$definition);
 
@@ -169,8 +186,10 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         if (!file_exists($container->getParameter('kernel.logs_dir'))) {
             mkdir($container->getParameter('kernel.logs_dir'), 0775, true);
         }
-        $definition = new Definition(Log::class,[null]);
-        $container->setDefinition('log',$definition);
+        $logDefinition = new Definition(Log::class,[
+            '%kernel.logs_dir%'
+        ]);
+        $container->setDefinition('log',$logDefinition);
 
         //Exception Handler
         $definition=new Definition(ExceptionSubscriber::class,[
@@ -231,6 +250,14 @@ class FrameworkBundleServiceProvider implements ServiceProviderInterface{
         $saveSessionListenerDefinition=new Definition(SaveSessionListener::class);
         $saveSessionListenerDefinition->addTag('kernel.event_subscriber');
         $container->setDefinition('session.save_session_listener',$saveSessionListenerDefinition);
+
+        //Session Command
+        $createPdoStorageCommandDefinition = new Definition(CreatePdoStorageCommand::class,[
+            new Reference('session.pdo_session_handler'),
+            new Reference('log')
+        ]);
+        $createPdoStorageCommandDefinition->addTag('console.command',['command'=>'session:pdo:create']);
+        $container->setDefinition('console.command.create_pdo_storage',$createPdoStorageCommandDefinition);
 
         //Locale Listener
         $localListenerDefinition=new Definition(LocaleListener::class);
